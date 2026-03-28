@@ -48,6 +48,30 @@ void pwm(int pin, int duty_percent) {
     }
 }
 
+void pwm_three(int r, int g, int y) {
+    const int p = 2000;   // total period (microseconds)
+    const int m = 100;    // resolution
+    int d = p / m;        // time per slice
+
+    for (int j = 0; j < m; j++) {
+
+        // RED
+        if (j < r) gpio_set(PIN_RED);
+        else       gpio_clear(PIN_RED);
+
+        // GREEN
+        if (j < g) gpio_set(PIN_GREEN);
+        else       gpio_clear(PIN_GREEN);
+
+        // YELLOW
+        if (j < y) gpio_set(PIN_YELLOW);
+        else       gpio_clear(PIN_YELLOW);
+
+        sleep_micro_seconds(d);
+    }
+}
+
+
 typedef struct {
     int context;
 } pdm_state;
@@ -170,23 +194,6 @@ mode_t modes[4] = {
 };
 
 
-int main() {
-    // Configuring for attachment to *Port B*
-
-    printUART("System timer blink demo\n");
-
-    // Initialize the Red LED (GPIO 4) to be an output pin
-    *GPFSEL0 = (*GPFSEL0 & ~(0b111 << 12)) | (0b001 << 12);
-
-    // start blinking the LED forever
-    while(1) {
-        // Blink the LED
-        blink();
-    }
-
-    return 0;
-
-}
 
 int main() {
     printUART("Boat controller starting...\n");
@@ -223,9 +230,7 @@ int main() {
         mode_t m = modes[mode];
 
         if (m.use_pwm) {
-            pwm(PIN_RED,    m.red);
-            pwm(PIN_GREEN,  m.green);
-            pwm(PIN_YELLOW, m.yellow);
+            pwm_three(m.red, m.green, m.yellow);
         } else {
             pdm_step(PIN_RED,    &red_pdm,    m.red);
             pdm_step(PIN_GREEN,  &green_pdm,  m.green);
