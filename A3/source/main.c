@@ -5,49 +5,43 @@
 #include "gpio.h"
 #include "uart.h"
 
-#define PIN_SW1     0
-#define PIN_SW2     1
-#define PIN_RED     4
-#define PIN_YELLOW  12
-#define PIN_GREEN   16
-
+// GPIO pin assignments
+#define PIN_SW1     0      // Button A 
+#define PIN_SW2     1     // Button B 
+#define PIN_RED     4      // Red LED 
+#define PIN_YELLOW  12     // Yellow LED
+#define PIN_GREEN   16     // Green LED 
 
 void printUART(char *str) {
     uart_puts(str);
 }
 
-//why static inline?
+/*
+ * Set a GPIO pin HIGH.
+ * Pins <32 use GPSET0, pins >=32 use GPSET1.
+ */
 static inline void gpio_set(int pin) {
     if (pin < 32) *GPSET0 = (1 << pin);
     else *GPSET1 = (1 << (pin - 32));
 }
+/*
+ * Set a GPIO pin LOW.
+ * Uses GPCLR registers similarly to gpio_set.
+ */
 
 static inline void gpio_clear(int pin) {
     if (pin < 32) *GPCLR0 = (1 << pin);
     else *GPCLR1 = (1 << (pin - 32));
 }
 
-void pwm(int pin, int duty_percent) {
-    const int p = 2000;      // total period (microseconds)
-    const int m = 100;       // quantization resolution
+/*
+ * PWM for three outputs simultaneously.
+ * Each LED/motor has its own duty cycle.
+ *
+ * All signals share the same time slices so they stay synchronized.
+ */
 
-    int n = duty_percent;    // because duty_percent already represents n/m
-    int d = p / m;           // time per slice
-
-    gpio_clear(pin);         // set output LOW at start
-
-    for (int j = 0; j < m; j++) {
-
-        if (j >= (m - n)) {
-            gpio_set(pin);   // HIGH
-        } else {
-            gpio_clear(pin); // LOW
-        }
-
-        sleep_micro_seconds(d);
-    }
-}
-
+//
 void pwm_three(int r, int g, int y) {
     const int p = 2000;   // total period (microseconds)
     const int m = 100;    // resolution
@@ -70,12 +64,17 @@ void pwm_three(int r, int g, int y) {
         sleep_micro_seconds(d);
     }
 }
-
+/*
+ * PDM state structure.
+ * used for pulse density modulation.
+ */
 
 typedef struct {
     int context;
 } pdm_state;
 
+
+//Perform one step of Pulse Density Modulation (PDM). 
 void pdm_step(int pin, pdm_state *s, int level_percent) {
     const int m = 100;
 
@@ -89,6 +88,10 @@ void pdm_step(int pin, pdm_state *s, int level_percent) {
     }
 }
 
+/*
+ * Read the logic level of a GPIO pin.
+ * Returns 1 if HIGH, 0 if LOW.
+ */
 int read_pin(int pin) {
     if (pin < 32) return (*GPLEV0 & (1 << pin)) != 0;
     else return (*GPLEV1 & (1 << (pin - 32))) != 0;
@@ -127,6 +130,10 @@ void sleep_micro_seconds(unsigned int delay)
     while (get_system_timer() - start_time < delay);
 }
 
+/*
+ * Enable internal pull-up resistor on a GPIO input pin.
+ * Prevents floating inputs for switches.
+ */
 void gpio_enable_pullup(int pin) {
     volatile unsigned int* reg = GPIO_PUP_PDN_CNTRL_REG0 + (pin / 16);
     int shift = (pin % 16) * 2;
@@ -135,33 +142,16 @@ void gpio_enable_pullup(int pin) {
 }
 
 
-void led_red_on() {
-    *GPSET0 = (1 << 4);
-}
-
-void led_red_off() {
-    *GPCLR0 = (1 << 4);
-}
-
-
-// A function to blink the red LED
-void blink() {
-    led_red_on();
-
-    // Sleep for 1 second
-    sleep_micro_seconds(1000000);
-
-    led_red_off();
-
-    // Sleep for 1 second
-    sleep_micro_seconds(1000000);
-}
 
 //init previous of SW1 and SW2 to 1 (not pressed)
 int prev_sw1 = 1;
 int prev_sw2 = 1;
 
-
+/*
+ * Update operating mode based on button presses.
+ * Buttons are active-low because of pull-ups.
+ * Mode changes on button press events (1->0 transitions).
+*/
 void update_mode(int *mode) {
     int sw1 = read_pin(PIN_SW1);
     int sw2 = read_pin(PIN_SW2);
@@ -178,7 +168,9 @@ void update_mode(int *mode) {
     prev_sw2 = sw2;
 }
 
-
+/*
+ * Mode configuration structure
+ */
 typedef struct {
     int red;
     int green;
@@ -186,6 +178,9 @@ typedef struct {
     int use_pwm;   // 1 = PWM, 0 = PDM
 } mode_t;
 
+/*
+ * Predefined operating modes for the boat controller.
+ */
 mode_t modes[4] = {
     {50, 50,  0, 1},   // Mode 0: forward (PWM)
     {10, 80,  0, 0},   // Mode 1: turn left (PDM)
@@ -213,6 +208,7 @@ int main() {
 
     int mode = 0;
 
+    // PDM states for each LED
     pdm_state red_pdm = {0};
     pdm_state green_pdm = {0};
     pdm_state yellow_pdm = {0};
@@ -227,8 +223,10 @@ int main() {
             last_button_check = get_system_timer();
         }
 
+        // Load parameters for current mode
         mode_t m = modes[mode];
 
+        // Choose PWM or PDM based on mode configuration
         if (m.use_pwm) {
             pwm_three(m.red, m.green, m.yellow);
         } else {
