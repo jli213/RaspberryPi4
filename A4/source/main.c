@@ -158,21 +158,22 @@ int main() {
         int pins = readRegisterMCP23S08( MCP23S08_GPIO );
 
         // report switch state to uart
-        uart_puts( "v0: " );
-        itoc( v0, printBuffer, 0 );
-        uart_puts( printBuffer );
-        uart_puts( "  v1: " );
-        itoc( v1, printBuffer, 0 );
-        uart_puts( printBuffer );
-        uart_puts( " v7: " );
-        itoc( v7, printBuffer, 0 );
-        uart_puts( printBuffer );
+        // uart_puts( "v0: " );
+        // itoc( v0, printBuffer, 0 );
+        // uart_puts( printBuffer );
+        // uart_puts( "  v1: " );
+        // itoc( v1, printBuffer, 0 );
+        // uart_puts( printBuffer );
+        // uart_puts( " v7: " );
+        // itoc( v7, printBuffer, 0 );
+        // uart_puts( printBuffer );
 
-        uart_puts( " buttons: 0x" );
-        xtoa( pins & 0x3f, printBuffer, 256 );
-        uart_puts( printBuffer );
+        // uart_puts( " buttons: 0x" );
+        // xtoa( pins & 0x3f, printBuffer, 256 );
+        // uart_puts( printBuffer );
 
-        uart_puts( "\n" );
+        //uart_puts( "\n" );
+
         uart_puts("(");
         itoc(v1, printBuffer, 0);
         uart_puts(printBuffer);
@@ -180,9 +181,6 @@ int main() {
         itoc(pins & 0x3f, printBuffer, 0);
         uart_puts(printBuffer);
         uart_puts(")\n");
-
-
-        uart_puts( "\n" );
 
         delay( 10 );
     }

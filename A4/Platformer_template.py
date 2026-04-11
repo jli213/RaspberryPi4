@@ -195,12 +195,12 @@ def EVENT_HANDLER_UART():
             continue
 
         # --- Movement ---
-        if v1 < 500:
-            P1.set_acc(-ACC)
-        elif v1 > 525:
+        if v1 < 505:
             P1.set_acc(ACC)
+        elif v1 > 520:
+            P1.set_acc(-ACC)
         else:
-            P1.set_acc(0) # around the middle 512
+            P1.set_acc(0) # around the 512 (allow for about 10 units of discrepency)
 
         # --- Jump (Button B = bit 1 = value 2) ---
         if buttons & 0x02:
@@ -244,8 +244,8 @@ def main():
     while True:
         P1.update()
 
-        EVENT_HANDLER_KEYBOARD()
-        #EVENT_HANDLER_UART()
+        #EVENT_HANDLER_KEYBOARD()
+        EVENT_HANDLER_UART()
 
         # game over condition
         if P1.rect.top > HEIGHT:

@@ -22,77 +22,77 @@ LOAD build/timer.o
 LOAD build/uart.o
                 0x0000000000080000                . = 0x80000
 
-.text           0x0000000000080000      0xcb8
+.text           0x0000000000080000      0xce8
  *(.text.boot)
  .text.boot     0x0000000000080000       0x50 build/start.o
                 0x0000000000080000                _start
  *(.text .text.* .gnu.linkonce.t*)
  .text          0x0000000000080050        0x0 build/start.o
- .text          0x0000000000080050      0x460 build/main.o
+ .text          0x0000000000080050      0x490 build/main.o
                 0x0000000000080050                xtoa
                 0x00000000000801d0                itoc
                 0x00000000000802e0                readRegisterMCP23S08
                 0x000000000008031c                writeRegisterMCP23S08
-                0x0000000000080334                mcp3008Convert
-                0x0000000000080348                main
- .text          0x00000000000804b0       0xac build/mbox.o
-                0x00000000000804b0                mbox_call
- .text          0x000000000008055c      0x3a8 build/spi.o
-                0x000000000008055c                initSPIPins
-                0x00000000000806d8                spiFrequency
-                0x000000000008070c                spiConfig
-                0x0000000000080774                spiCESelect
-                0x00000000000807d8                spiTransfer
- .text          0x0000000000080904       0xf8 build/timer.o
-                0x0000000000080904                getSystemTimerCounter
-                0x000000000008098c                delayus
-                0x00000000000809d4                delay
- .text          0x00000000000809fc      0x2bc build/uart.o
-                0x00000000000809fc                uart_init
-                0x0000000000080b4c                uart_send
-                0x0000000000080b8c                uart_getc
-                0x0000000000080bdc                uart_puts
-                0x0000000000080c38                uart_hex
+                0x0000000000080360                mcp3008Convert
+                0x00000000000803c8                main
+ .text          0x00000000000804e0       0xac build/mbox.o
+                0x00000000000804e0                mbox_call
+ .text          0x000000000008058c      0x3a8 build/spi.o
+                0x000000000008058c                initSPIPins
+                0x0000000000080708                spiFrequency
+                0x000000000008073c                spiConfig
+                0x00000000000807a4                spiCESelect
+                0x0000000000080808                spiTransfer
+ .text          0x0000000000080934       0xf8 build/timer.o
+                0x0000000000080934                getSystemTimerCounter
+                0x00000000000809bc                delayus
+                0x0000000000080a04                delay
+ .text          0x0000000000080a2c      0x2bc build/uart.o
+                0x0000000000080a2c                uart_init
+                0x0000000000080b7c                uart_send
+                0x0000000000080bbc                uart_getc
+                0x0000000000080c0c                uart_puts
+                0x0000000000080c68                uart_hex
 
-.iplt           0x0000000000080cb8        0x0
- .iplt          0x0000000000080cb8        0x0 build/start.o
+.iplt           0x0000000000080ce8        0x0
+ .iplt          0x0000000000080ce8        0x0 build/start.o
 
-.rodata         0x0000000000080cb8       0x72
+.rodata         0x0000000000080ce8       0x5b
  *(.rodata .rodata.* .gnu.linkonce.r*)
- .rodata        0x0000000000080cb8       0x72 build/main.o
+ .rodata        0x0000000000080ce8       0x5b build/main.o
                 [!provide]                        PROVIDE (_data = .)
 
-.rela.dyn       0x0000000000080d30        0x0
- .rela.iplt     0x0000000000080d30        0x0 build/start.o
+.rela.dyn       0x0000000000080d48        0x0
+ .rela.iplt     0x0000000000080d48        0x0 build/start.o
  .rela.text.boot
-                0x0000000000080d30        0x0 build/start.o
+                0x0000000000080d48        0x0 build/start.o
 
-.data           0x0000000000080d2a        0x0
+.data           0x0000000000080d43        0x0
  *(.data .data.* .gnu.linkonce.d*)
- .data          0x0000000000080d2a        0x0 build/start.o
- .data          0x0000000000080d2a        0x0 build/main.o
- .data          0x0000000000080d2a        0x0 build/mbox.o
- .data          0x0000000000080d2a        0x0 build/spi.o
- .data          0x0000000000080d2a        0x0 build/timer.o
- .data          0x0000000000080d2a        0x0 build/uart.o
+ .data          0x0000000000080d43        0x0 build/start.o
+ .data          0x0000000000080d43        0x0 build/main.o
+ .data          0x0000000000080d43        0x0 build/mbox.o
+ .data          0x0000000000080d43        0x0 build/spi.o
+ .data          0x0000000000080d43        0x0 build/timer.o
+ .data          0x0000000000080d43        0x0 build/uart.o
 
-.igot.plt       0x0000000000080d30        0x0
- .igot.plt      0x0000000000080d30        0x0 build/start.o
+.igot.plt       0x0000000000080d48        0x0
+ .igot.plt      0x0000000000080d48        0x0 build/start.o
 
-.bss            0x0000000000080d30       0x90
-                0x0000000000080d30                . = ALIGN (0x10)
-                0x0000000000080d30                __bss_start = .
+.bss            0x0000000000080d50       0x90
+                0x0000000000080d50                . = ALIGN (0x10)
+                0x0000000000080d50                __bss_start = .
  *(.bss .bss.*)
- .bss           0x0000000000080d30        0x0 build/start.o
- .bss           0x0000000000080d30        0x0 build/main.o
- .bss           0x0000000000080d30       0x90 build/mbox.o
-                0x0000000000080d30                mbox
- .bss           0x0000000000080dc0        0x0 build/spi.o
- .bss           0x0000000000080dc0        0x0 build/timer.o
- .bss           0x0000000000080dc0        0x0 build/uart.o
+ .bss           0x0000000000080d50        0x0 build/start.o
+ .bss           0x0000000000080d50        0x0 build/main.o
+ .bss           0x0000000000080d50       0x90 build/mbox.o
+                0x0000000000080d50                mbox
+ .bss           0x0000000000080de0        0x0 build/spi.o
+ .bss           0x0000000000080de0        0x0 build/timer.o
+ .bss           0x0000000000080de0        0x0 build/uart.o
  *(COMMON)
-                0x0000000000080dc0                __bss_end = .
-                0x0000000000080dc0                _end = .
+                0x0000000000080de0                __bss_end = .
+                0x0000000000080de0                _end = .
 
 /DISCARD/
  *(.comment)
@@ -103,19 +103,19 @@ LOAD build/uart.o
 OUTPUT(kernel8.elf elf64-littleaarch64)
 LOAD linker stubs
 
-.debug_info     0x0000000000000000      0x7f5
- .debug_info    0x0000000000000000      0x354 build/main.o
- .debug_info    0x0000000000000354       0xba build/mbox.o
- .debug_info    0x000000000000040e      0x183 build/spi.o
- .debug_info    0x0000000000000591       0xf2 build/timer.o
- .debug_info    0x0000000000000683      0x172 build/uart.o
+.debug_info     0x0000000000000000      0x84c
+ .debug_info    0x0000000000000000      0x3ab build/main.o
+ .debug_info    0x00000000000003ab       0xba build/mbox.o
+ .debug_info    0x0000000000000465      0x183 build/spi.o
+ .debug_info    0x00000000000005e8       0xf2 build/timer.o
+ .debug_info    0x00000000000006da      0x172 build/uart.o
 
-.debug_abbrev   0x0000000000000000      0x446
- .debug_abbrev  0x0000000000000000      0x161 build/main.o
- .debug_abbrev  0x0000000000000161       0x98 build/mbox.o
- .debug_abbrev  0x00000000000001f9       0x93 build/spi.o
- .debug_abbrev  0x000000000000028c       0xaf build/timer.o
- .debug_abbrev  0x000000000000033b      0x10b build/uart.o
+.debug_abbrev   0x0000000000000000      0x429
+ .debug_abbrev  0x0000000000000000      0x144 build/main.o
+ .debug_abbrev  0x0000000000000144       0x98 build/mbox.o
+ .debug_abbrev  0x00000000000001dc       0x93 build/spi.o
+ .debug_abbrev  0x000000000000026f       0xaf build/timer.o
+ .debug_abbrev  0x000000000000031e      0x10b build/uart.o
 
 .debug_aranges  0x0000000000000000       0xf0
  .debug_aranges
@@ -129,46 +129,46 @@ LOAD linker stubs
  .debug_aranges
                 0x00000000000000c0       0x30 build/uart.o
 
-.debug_line     0x0000000000000000      0x569
- .debug_line    0x0000000000000000      0x168 build/main.o
- .debug_line    0x0000000000000168       0x93 build/mbox.o
- .debug_line    0x00000000000001fb      0x169 build/spi.o
- .debug_line    0x0000000000000364       0xb3 build/timer.o
- .debug_line    0x0000000000000417      0x152 build/uart.o
+.debug_line     0x0000000000000000      0x581
+ .debug_line    0x0000000000000000      0x180 build/main.o
+ .debug_line    0x0000000000000180       0x93 build/mbox.o
+ .debug_line    0x0000000000000213      0x169 build/spi.o
+ .debug_line    0x000000000000037c       0xb3 build/timer.o
+ .debug_line    0x000000000000042f      0x152 build/uart.o
 
-.debug_str      0x0000000000000000      0x228
- .debug_str     0x0000000000000000      0x17c build/main.o
-                                        0x1b5 (size before relaxing)
- .debug_str     0x000000000000017c        0xf build/mbox.o
+.debug_str      0x0000000000000000      0x22d
+ .debug_str     0x0000000000000000      0x181 build/main.o
+                                        0x1bf (size before relaxing)
+ .debug_str     0x0000000000000181        0xf build/mbox.o
                                          0x7e (size before relaxing)
- .debug_str     0x000000000000018b       0x4a build/spi.o
+ .debug_str     0x0000000000000190       0x4a build/spi.o
                                          0xe2 (size before relaxing)
- .debug_str     0x00000000000001d5       0x2c build/timer.o
+ .debug_str     0x00000000000001da       0x2c build/timer.o
                                          0x98 (size before relaxing)
- .debug_str     0x0000000000000201       0x27 build/uart.o
+ .debug_str     0x0000000000000206       0x27 build/uart.o
                                          0xb4 (size before relaxing)
 
 .debug_line_str
-                0x0000000000000000       0x7c
+                0x0000000000000000       0x90
  .debug_line_str
-                0x0000000000000000       0x3d build/main.o
-                                         0x5e (size before relaxing)
+                0x0000000000000000       0x51 build/main.o
+                                         0x86 (size before relaxing)
  .debug_line_str
-                0x000000000000003d        0xe build/mbox.o
-                                         0x49 (size before relaxing)
+                0x0000000000000051        0xe build/mbox.o
+                                         0x71 (size before relaxing)
  .debug_line_str
-                0x000000000000004b        0xd build/spi.o
-                                         0x46 (size before relaxing)
+                0x000000000000005f        0xd build/spi.o
+                                         0x6e (size before relaxing)
  .debug_line_str
-                0x0000000000000058        0xf build/timer.o
-                                         0x4c (size before relaxing)
+                0x000000000000006c        0xf build/timer.o
+                                         0x74 (size before relaxing)
  .debug_line_str
-                0x0000000000000067       0x15 build/uart.o
-                                         0x50 (size before relaxing)
+                0x000000000000007b       0x15 build/uart.o
+                                         0x78 (size before relaxing)
 
-.debug_frame    0x0000000000000000      0x300
- .debug_frame   0x0000000000000000       0xe0 build/main.o
- .debug_frame   0x00000000000000e0       0x30 build/mbox.o
- .debug_frame   0x0000000000000110       0xa8 build/spi.o
- .debug_frame   0x00000000000001b8       0x80 build/timer.o
- .debug_frame   0x0000000000000238       0xc8 build/uart.o
+.debug_frame    0x0000000000000000      0x310
+ .debug_frame   0x0000000000000000       0xf0 build/main.o
+ .debug_frame   0x00000000000000f0       0x30 build/mbox.o
+ .debug_frame   0x0000000000000120       0xa8 build/spi.o
+ .debug_frame   0x00000000000001c8       0x80 build/timer.o
+ .debug_frame   0x0000000000000248       0xc8 build/uart.o
