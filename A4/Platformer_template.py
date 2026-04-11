@@ -194,15 +194,19 @@ def EVENT_HANDLER_UART():
         except:
             continue
 
-        # --- Movement ---
+        # Movement 
+        # The joystick centers around ~512.
+        # Use small thresholds on each side to ignore minor noise.
+        # Values below the lower threshold move right; above the upper threshold move left.
         if v1 < 505:
             P1.set_acc(ACC)
         elif v1 > 520:
             P1.set_acc(-ACC)
         else:
-            P1.set_acc(0) # around the 512 (allow for about 10 units of discrepency)
+            P1.set_acc(0)
 
-        # --- Jump (Button B = bit 1 = value 2) ---
+
+        # Jump (Button B = bit 1 = value 2) 
         if buttons & 0x02:
             P1.jump()
         else:
