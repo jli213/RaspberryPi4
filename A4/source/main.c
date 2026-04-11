@@ -82,22 +82,48 @@ unsigned char readRegisterMCP23S08( unsigned char reg ) {
 
 
 void writeRegisterMCP23S08( unsigned char reg, unsigned char value ) {
+    unsigned char spiSendBuffer[32];
+    unsigned char spiRecvBuffer[32];
 
-    // Code missing
-    // Exercise: Try implementing yourself!
-
+    spiSendBuffer[0] = MCP23S08_CONTROL | MCP23S08_WRITE;       // control bit pattern for MCP23S08 and set write bit
+    spiSendBuffer[1] = reg;                                     // register number
+    spiSendBuffer[2] = value;                                   // value to write
+    spiTransfer( spiSendBuffer, spiRecvBuffer, 3 );
 }
 
 
 // MCP3008
 int mcp3008Convert( unsigned int chan ) {
+    unsigned char send[3];
+    unsigned char recv[3];
 
-    // Code missing
-    // Exercise: Try implementing yourself!
+    send[0] = 0x01;  
+    // The MCP3008 expects the START bit as the LSB of the first byte (datasheet Fig 6‑1).
 
-    return 0;
+    send[1] = (0x08 | chan) << 4;
+    // 0x08 = 0000 1000
+    // SGL/DIFF = 1 (single‑ended mode)
+    // OR with channel number (0–7) to insert D2‑D0
+    // Then shift left 4 so SGL + D2 D1 D0 become the upper bits of byte 2
+    // Lower 4 bits are “don’t care” (datasheet Sec 6.2).
 
+    send[2] = 0x00;
+    // Third byte is just a dummy byte to clock out the ADC result.
+
+    spiTransfer(send, recv, 3);
+    // recv[1] contains the two MSBs of the 10‑bit result (in its lowest 2 bits)
+    // recv[2] contains the lower 8 bits (datasheet Fig 6‑1).
+
+    int value = ((recv[1] & 0x03) << 8) | recv[2];
+    // Mask recv[1] with 0x03 (0000 0011) to keep only the top 2 ADC bits
+    // Shift them left 8 to form top 2 bits of 10-bit result
+    // OR with recv[2] to append lower 8 bits
+
+    return value;
 }
+
+
+
 
 
 
@@ -145,6 +171,16 @@ int main() {
         uart_puts( " buttons: 0x" );
         xtoa( pins & 0x3f, printBuffer, 256 );
         uart_puts( printBuffer );
+
+        uart_puts( "\n" );
+        uart_puts("(");
+        itoc(v1, printBuffer, 0);
+        uart_puts(printBuffer);
+        uart_puts(" ");
+        itoc(pins & 0x3f, printBuffer, 0);
+        uart_puts(printBuffer);
+        uart_puts(")\n");
+
 
         uart_puts( "\n" );
 
